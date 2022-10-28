@@ -1,17 +1,12 @@
 import { useState } from "react";
+ 
 
-const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const [likes, setLikes] = useState(blog.likes);
   const [showDetails, setShowDetails] = useState(false);
   const [label, setLabel] = useState("view");
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
+ 
 
   const addLike = (e) => {
     e.preventDefault();
@@ -27,21 +22,14 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
     setLikes(likes + 1);
   };
 
-  const handleClick = () => {
-    setShowDetails(!showDetails);
-    !showDetails ? setLabel("hide") : setLabel("view");
-  };
-
-  const removeBlog = (e) => {
-    e.preventDefault();
-    deleteBlog(blog);
-  };
+  
+ 
 
   function showRemoveButton() {
     if (user) {
       return blog.user.username === user.username ? (
         <div>
-          <button onClick={removeBlog}>remove</button>
+          <button onClick={() => removeBlog(blog)} className="btn-small red">remove</button>
         </div>
       ) : (
         ""
@@ -50,20 +38,18 @@ const Blog = ({ blog, updateBlog, deleteBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle} className="blog">
-      {blog.title} {blog.author} <button onClick={handleClick}>{label}</button>
-      {showDetails ? (
+    <div  >
+      {blog.title} {blog.author} 
+      
         <div className="togglableContent">
           <div>{blog.url}</div>
           <div>
-            {likes} <button onClick={addLike}>like</button>
+            {likes} <button className="btn-small blue" onClick={addLike}>like</button>
           </div>
           <div>{blog.author}</div>
           {showRemoveButton()}
         </div>
-      ) : (
-        ""
-      )}
+       
     </div>
   );
 };

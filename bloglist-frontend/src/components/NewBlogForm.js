@@ -9,11 +9,11 @@ const NewBlogForm = ({
 }) => {
   return (
     <div>
-      <h3>create new</h3>
+      <h4>Create new</h4>
       <div>
         <form onSubmit={handleSubmit}>
           <div>
-            title
+           
             <input
               type="text"
               value={title}
@@ -23,7 +23,7 @@ const NewBlogForm = ({
             />
           </div>
           <div>
-            author
+           
             <input
               type="text"
               value={author}
@@ -33,7 +33,7 @@ const NewBlogForm = ({
             />
           </div>
           <div>
-            url
+            
             <input
               type="text"
               value={url}
@@ -42,7 +42,7 @@ const NewBlogForm = ({
               placeholder="url"
             />
           </div>
-          <button type="submit" id="create-blog-button">
+          <button type="submit" className=" btn-small waves-effect waves-light" id="create-blog-button">
             create
           </button>
         </form>
