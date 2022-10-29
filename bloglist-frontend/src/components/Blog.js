@@ -1,29 +1,54 @@
-import { useState } from "react";
- 
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import { addNotification, removeNotification } from "../reducers/notificationReducer";
+import { deleteBlog, updateBlog } from "../reducers/blogReducer";
 
-const Blog = ({ blog, updateBlog, removeBlog, user }) => {
+
+const Blog = ({ blog }) => {
   const [likes, setLikes] = useState(blog.likes);
-  const [showDetails, setShowDetails] = useState(false);
-  const [label, setLabel] = useState("view");
+  const [message, setMessage] = useState({});
+  const user = useSelector(state => state.user[0])
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
 
- 
+
+  useEffect(() => {
+    dispatch(addNotification(message))
+    setTimeout(() => {
+      dispatch(removeNotification(message))
+    }, 3000);
+  }, [message, dispatch]);
+
 
   const addLike = (e) => {
     e.preventDefault();
 
     const blogToUpdate = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      user: blog.user,
+      ...blog,
       likes: likes + 1,
     };
-    updateBlog(blog.id, blogToUpdate);
+    try {
+      dispatch(updateBlog(blog.id, blogToUpdate))
+    } catch (exception) {
+      setMessage({ text: "Oops something went wrong", type: "error" });
+    }
     setLikes(likes + 1);
   };
 
-  
- 
+
+  const removeBlog = (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        dispatch(deleteBlog(blog));
+        navigate('/');
+        setMessage({ text: `Blog ${blog.title} removed!`, type: "success" });
+
+      } catch (exception) {
+        setMessage({ text: "Oops something went wrong", type: "error" });
+      }
+    }
+  };
 
   function showRemoveButton() {
     if (user) {
@@ -39,17 +64,17 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
 
   return (
     <div  >
-      {blog.title} {blog.author} 
-      
-        <div className="togglableContent">
-          <div>{blog.url}</div>
-          <div>
-            {likes} <button className="btn-small blue" onClick={addLike}>like</button>
-          </div>
-          <div>{blog.author}</div>
-          {showRemoveButton()}
+      {blog.title} {blog.author}
+
+      <div className="togglableContent">
+        <div><a href={blog.url}>{blog.url}</a></div>
+        <div>
+          {likes} <button className="btn-small blue" onClick={addLike}>like</button>
         </div>
-       
+        <div>{blog.author}</div>
+        {showRemoveButton()}
+      </div>
+
     </div>
   );
 };
